@@ -58,3 +58,6 @@ python main.py
     *   Press **F3** to auto-pick Manticore.
         
     *   Press **ESC** to stop the program.
+
+## Issues & Support
+If you encounter any bugs, run into problems getting the script to work, or have suggestions for improvements, please feel free to open an issue in this repository!
