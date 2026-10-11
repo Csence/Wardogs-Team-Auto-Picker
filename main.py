@@ -3,11 +3,13 @@ import keyboard
 from teams import Teams
 from title import Title
 import cv2
-import pyautogui
-
-screen_width, screen_height = pyautogui.size()
 
 print(Title.show_title())
+
+
+
+screen_width = 1920
+screen_height = 1080
 
 picker = Picker(screen_width, screen_height)
 

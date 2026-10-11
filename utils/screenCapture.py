@@ -1,5 +1,6 @@
 from mss import MSS
-import mss
+
+import numpy as np
 
 def __scale_region_ingame(screen_width, screen_height):
         base_width = 1920
@@ -35,10 +36,14 @@ def captureScreen(mssInstance: MSS, monitorId: int, inGameScale: bool = False):
     monitorData = sct.monitors[monitorId]
     #output = "sct-{top}x{left}_{width}x{height}.png".format(**monitor)
 
+    print(sct.monitors)
+
     if inGameScale:
         region = __scale_region_ingame(monitorData["width"], monitorData["height"])
     else:
         region = __scale_region(monitorData["width"], monitorData["height"])
+
+    #print(region[0], region[1])
 
     monitor = {
         "top": region[1],
@@ -51,11 +56,13 @@ def captureScreen(mssInstance: MSS, monitorId: int, inGameScale: bool = False):
 
     # Print the monitor information
     print(f"Monitor Info: {monitor}")
-    sct_img = sct.grab(monitor)
+    sct_img = np.asarray(sct.grab(monitor))
+    #png = mss.tools.to_png(sct_img.rgb, sct_img.size)
+    return sct_img
 
-    png = mss.tools.to_png(sct_img.rgb, sct_img.size)
-    return None
-
-
+"""
 with MSS() as mss_instance:
-    captureScreen(mss_instance, 1)
+    img = captureScreen(mss_instance, 1)
+
+    imageProcesser.show_image(img)
+"""

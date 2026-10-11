@@ -1,9 +1,12 @@
+import time
+
 import win32process
 import win32gui
 import win32api
 import win32con
 import logging
 import psutil
+from mss import MSS
 
 """
 process_handle = win32security.OpenProcessToken(win32api.GetCurrentProcess(), win32con.TOKEN_ADJUST_PRIVILEGES | win32con.TOKEN_QUERY)
@@ -51,7 +54,7 @@ def getGameStatus():
     return running, pid
 
 def getMonitorId(process_id):
-    """Get the monitor ID of the primary monitor."""
+    """Get the monitor ID for the window associated with the given process ID."""
 
     logging.basicConfig(level=logging.DEBUG, format='%(asctime)s - %(levelname)s - %(message)s')
     windows = []
@@ -72,3 +75,32 @@ def getMonitorId(process_id):
             return int(monitor_id)
             
     return Exception(f"No window found for process ID {process_id}")
+
+def moveMouseToPosition(x, y):
+    """Move the mouse cursor to the specified (x, y) coordinates."""
+
+    logging.basicConfig(level=logging.DEBUG, format='%(asctime)s - %(levelname)s - %(message)s')
+    win32api.SetCursorPos((x, y))
+    logging.info(f"Moved mouse to ({x}, {y})")
+
+    return None
+
+def clickLeftMouseButton():
+    """Simulate a left mouse button click at the current cursor position."""
+
+    logging.basicConfig(level=logging.DEBUG, format='%(asctime)s - %(levelname)s - %(message)s')
+    win32api.mouse_event(win32con.MOUSEEVENTF_LEFTDOWN, 0, 0, 0, 0)
+    time.sleep(0.01)  # Short delay to simulate a real click
+    win32api.mouse_event(win32con.MOUSEEVENTF_LEFTUP, 0, 0, 0, 0)
+    logging.info("Left mouse button clicked")
+
+    return None
+
+def getMonitorPosition(mssInstance: MSS, monitorId: int):
+    """Get the position of the monitor with the given ID."""
+
+    logging.basicConfig(level=logging.DEBUG, format='%(asctime)s - %(levelname)s - %(message)s')
+    monitorData = mssInstance.monitors[monitorId]
+    logging.info(f"Monitor {monitorId} position: {monitorData['left']}, {monitorData['top']}")
+    return monitorData['left'], monitorData['top']
+
