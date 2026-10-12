@@ -1,8 +1,3 @@
-
-import os
-import sys
-
-import cv2
 import keyboard
 import time
 import subprocess
@@ -13,11 +8,6 @@ from utils.utils import getGameStatus, getMonitorId, clickLeftMouseButton
 import utils.imageProcesser as imageProcesser
 
 class Picker: 
-
-    def __init__(self, screen_width, screen_height):
-        self.screen_height = screen_height
-        self.screen_width = screen_width
-        return
 
     @staticmethod
     def __scale_region(screen_width, screen_height):
@@ -46,7 +36,8 @@ class Picker:
         )
 
         return region
-
+    
+    @staticmethod
     def pick_team(self, images):
         
         img, inGameImg = images
@@ -56,15 +47,14 @@ class Picker:
         if not running:
             print("Wardogs is not running. Please start the game and try again.")
             subprocess.call("cls", shell=True)
-            #os.system("cls")
-            print(Title.show_title())
+            Title.show_title()
             return
 
         monitorId = getMonitorId(pid)
         needleImg = imageProcesser.loadNeedleImage(img)
         needleInGameImg = imageProcesser.loadNeedleImage(inGameImg)
         
-        #subprocess.call("cls")
+        subprocess.call("cls", shell=True)
         print("Team selection in progress...")
 
         with MSS() as sct:
@@ -77,10 +67,8 @@ class Picker:
                     return
 
                 haystackImg = captureScreen(sct, monitorId)
-                #cv2.imshow("Haystack Image", haystackImg)
-                #cv2.waitKey()  # Add a small delay to allow the image to be displayed
                 try:
-                    region = self.__scale_region(self.screen_width, self.screen_height)
+                    region = self.__scale_region(monitorData["width"], monitorData["height"])
                     point = imageProcesser.locateCenterAndMove(haystackImg, needleImg, threshold=0.9, monitorXY=(monitorData["left"], monitorData["top"]), regionXY=(region[0], region[1]))
                 except ValueError as e:
                     #supress the exception and continue searching for the needle in the haystack
@@ -91,10 +79,8 @@ class Picker:
                     return
 
                 haystackImg = captureScreen(sct, monitorId, inGameScale=True)
-                #imageProcesser.show_image(haystackImg, window_name="Haystack Image")
-                #cv2.waitKey()  # Add a small delay to allow the image to be displayed
                 try:
-                    region = self.__scale_region_ingame(self.screen_width, self.screen_height)
+                    region = self.__scale_region_ingame(monitorData["width"], monitorData["height"])
                     imageProcesser.locateCenterAndMove(haystackImg, needleInGameImg, threshold=0.6, monitorXY=(monitorData["left"], monitorData["top"]), regionXY=(region[0], region[1]))
                     isInGame = True
                 except ValueError as e:
@@ -107,16 +93,11 @@ class Picker:
                 clickLeftMouseButton()
                 time.sleep(0.4)
 
-
-
-
-
-
-        subprocess.call("cls")
+        subprocess.call("cls", shell=True)
         print("You entered the selected team!\n" \
         "Going back to the menu!")
         time.sleep(4)
-        subprocess.call("cls")
-        print(Title.show_title())
+        subprocess.call("cls", shell=True)
+        Title.show_title()
 
         return

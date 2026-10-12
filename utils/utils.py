@@ -1,9 +1,5 @@
 import time
-
-import win32process
-import win32gui
-import win32api
-import win32con
+import win32process, win32api, win32gui, win32con
 import logging
 import psutil
 from mss import MSS
@@ -21,7 +17,7 @@ def getGameStatus():
     """
 
     app_name = "WardogsClient-Win64-Shipping.exe"
-    logging.basicConfig(level=logging.DEBUG, format='%(asctime)s - %(levelname)s - %(message)s')
+    logging.basicConfig()
 
     running = False
     pid = None
@@ -56,7 +52,7 @@ def getGameStatus():
 def getMonitorId(process_id):
     """Get the monitor ID for the window associated with the given process ID."""
 
-    logging.basicConfig(level=logging.DEBUG, format='%(asctime)s - %(levelname)s - %(message)s')
+    logging.basicConfig()
     windows = []
 
     def callback(hwnd, _):
@@ -79,7 +75,7 @@ def getMonitorId(process_id):
 def moveMouseToPosition(x, y):
     """Move the mouse cursor to the specified (x, y) coordinates."""
 
-    logging.basicConfig(level=logging.DEBUG, format='%(asctime)s - %(levelname)s - %(message)s')
+    logging.basicConfig()
     win32api.SetCursorPos((x, y))
     logging.info(f"Moved mouse to ({x}, {y})")
 
@@ -88,7 +84,7 @@ def moveMouseToPosition(x, y):
 def clickLeftMouseButton():
     """Simulate a left mouse button click at the current cursor position."""
 
-    logging.basicConfig(level=logging.DEBUG, format='%(asctime)s - %(levelname)s - %(message)s')
+    logging.basicConfig()
     win32api.mouse_event(win32con.MOUSEEVENTF_LEFTDOWN, 0, 0, 0, 0)
     time.sleep(0.01)  # Short delay to simulate a real click
     win32api.mouse_event(win32con.MOUSEEVENTF_LEFTUP, 0, 0, 0, 0)
@@ -99,7 +95,7 @@ def clickLeftMouseButton():
 def getMonitorPosition(mssInstance: MSS, monitorId: int):
     """Get the position of the monitor with the given ID."""
 
-    logging.basicConfig(level=logging.DEBUG, format='%(asctime)s - %(levelname)s - %(message)s')
+    logging.basicConfig()
     monitorData = mssInstance.monitors[monitorId]
     logging.info(f"Monitor {monitorId} position: {monitorData['left']}, {monitorData['top']}")
     return monitorData['left'], monitorData['top']

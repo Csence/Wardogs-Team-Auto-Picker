@@ -12,4 +12,5 @@ class Title:
                         "Choose a team by pressing one of the function keys(F1, F2, F3)!\n" \
                         "If you want to stop the program press ESC!"       
         
-        return title_string
+        print(title_string)
+        return
