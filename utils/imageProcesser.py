@@ -34,5 +34,3 @@ def locateCenterAndMove(haystack, needle, threshold=0.8, monitorXY=(0, 0), regio
         raise ValueError("needle not found in haystack with the given threshold")
     
     return None
-
-#locateCenter(cv2.imread("D:\\Projects\\Wardogs-Team-Auto-Picker\\utils\\hay (2).png"), loadNeedleImage("D:\\Projects\\Wardogs-Team-Auto-Picker\\utils\\needle (2).png"), threshold=0.99)

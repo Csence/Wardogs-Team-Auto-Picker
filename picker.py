@@ -95,7 +95,7 @@ class Picker:
                 #cv2.waitKey()  # Add a small delay to allow the image to be displayed
                 try:
                     region = self.__scale_region_ingame(self.screen_width, self.screen_height)
-                    imageProcesser.locateCenterAndMove(haystackImg, needleInGameImg, threshold=0.7, monitorXY=(monitorData["left"], monitorData["top"]), regionXY=(region[0], region[1]))
+                    imageProcesser.locateCenterAndMove(haystackImg, needleInGameImg, threshold=0.6, monitorXY=(monitorData["left"], monitorData["top"]), regionXY=(region[0], region[1]))
                     isInGame = True
                 except ValueError as e:
                     #supress the exception and continue searching for the needle in the haystack
