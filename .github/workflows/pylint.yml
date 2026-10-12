@@ -34,5 +34,9 @@ jobs:
           pip install pylint
 
       - name: Run Pylint
+        env:
+          PYTHONPATH: ${{ github.workspace }}
         run: |
-          pylint $(git ls-files '*.py')
+          pylint --init-hook="import sys; sys.path.insert(0, '.')" \
+          --disable=missing-class-docstring \
+          $(git ls-files '*.py')

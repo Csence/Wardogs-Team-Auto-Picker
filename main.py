@@ -1,5 +1,5 @@
-from picker import Picker
 import keyboard
+from picker import Picker
 from teams import Teams
 from title import Title
 
