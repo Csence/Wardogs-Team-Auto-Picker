@@ -1,33 +1,6 @@
 from mss import MSS
 import numpy as np
-
-def __scale_region_ingame(screen_width, screen_height):
-        base_width = 1920
-        base_height = 1080
-
-        region = (
-            int(1850 * screen_width / base_width),
-            int(1000 * screen_height / base_height),
-            int(50 * screen_width / base_width),
-            int(50 * screen_height / base_height)
-        )
-
-        return region
-
-
-def __scale_region(screen_width, screen_height):
-        base_width = 1920
-        base_height = 1080
-
-        region = (
-            int(720 * screen_width / base_width),
-            int(400 * screen_height / base_height),
-            int(480 * screen_width / base_width),
-            int(300 * screen_height / base_height)
-        )
-
-        return region
-
+from utils.utils import scale_region, scale_region_ingame
 
 def captureScreen(mssInstance: MSS, monitorId: int, inGameScale: bool = False):
 
@@ -35,9 +8,9 @@ def captureScreen(mssInstance: MSS, monitorId: int, inGameScale: bool = False):
     monitorData = sct.monitors[monitorId]
 
     if inGameScale:
-        region = __scale_region_ingame(monitorData["width"], monitorData["height"])
+        region = scale_region_ingame(monitorData["width"], monitorData["height"])
     else:
-        region = __scale_region(monitorData["width"], monitorData["height"])
+        region = scale_region(monitorData["width"], monitorData["height"])
 
     monitor = {
         "top": region[1],

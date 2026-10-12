@@ -1,0 +1,48 @@
+name: Build and Package Windows Executable
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: windows-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11' # Change this if you need a specific Python version
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install pyinstaller opencv-python pywin32 mss psutil keyboard
+
+      - name: Build executable with PyInstaller
+        run: |
+          # Creates a single standalone .exe file in the 'dist' folder
+          pyinstaller --onefile main.py
+
+      - name: Package Executable and Images into a Zip
+        run: |
+          # Create a staging directory for the zip contents
+          mkdir release_package
+          
+          # Copy the compiled .exe and the images folder into the staging directory
+          Copy-Item -Path "dist\main.exe" -Destination "release_package\"
+          Copy-Item -Path "images" -Destination "release_package\images" -Recurse
+          
+          # Compress the staging directory into a zip file
+          Compress-Archive -Path "release_package\*" -DestinationPath "my_project_build.zip"
+        shell: powershell
+
+      - name: Upload Zip Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: windows-build
+          path: my_project_build.zip

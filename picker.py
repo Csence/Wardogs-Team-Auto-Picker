@@ -6,44 +6,17 @@ from title import Title
 from utils.screenCapture import captureScreen
 from utils.utils import getGameStatus, getMonitorId, clickLeftMouseButton
 import utils.imageProcesser as imageProcesser
+from utils.utils import scale_region, scale_region_ingame
 
-class Picker: 
-
-    @staticmethod
-    def __scale_region(screen_width, screen_height):
-        base_width = 1920
-        base_height = 1080
-
-        region = (
-            int(720 * screen_width / base_width),
-            int(400 * screen_height / base_height),
-            int(480 * screen_width / base_width),
-            int(300 * screen_height / base_height)
-        )
-
-        return region
+class Picker:
 
     @staticmethod
-    def __scale_region_ingame(screen_width, screen_height):
-        base_width = 1920
-        base_height = 1080
+    def pick_team(images):
 
-        region = (
-            int(1850 * screen_width / base_width),
-            int(1000 * screen_height / base_height),
-            int(50 * screen_width / base_width),
-            int(50 * screen_height / base_height)
-        )
-
-        return region
-    
-    @staticmethod
-    def pick_team(self, images):
-        
         img, inGameImg = images
-        
+  
         running, pid = getGameStatus()
-        
+
         if not running:
             print("Wardogs is not running. Please start the game and try again.")
             subprocess.call("cls", shell=True)
@@ -53,7 +26,7 @@ class Picker:
         monitorId = getMonitorId(pid)
         needleImg = imageProcesser.loadNeedleImage(img)
         needleInGameImg = imageProcesser.loadNeedleImage(inGameImg)
-        
+
         subprocess.call("cls", shell=True)
         print("Team selection in progress...")
 
@@ -61,18 +34,18 @@ class Picker:
             point = None
             monitorData = sct.monitors[monitorId]
             isInGame = False
-            
+
             while point is None:
                 if keyboard.is_pressed("esc"):
                     return
 
                 haystackImg = captureScreen(sct, monitorId)
                 try:
-                    region = self.__scale_region(monitorData["width"], monitorData["height"])
+                    region = scale_region(monitorData["width"], monitorData["height"])
                     point = imageProcesser.locateCenterAndMove(haystackImg, needleImg, threshold=0.9, monitorXY=(monitorData["left"], monitorData["top"]), regionXY=(region[0], region[1]))
                 except ValueError as e:
                     #supress the exception and continue searching for the needle in the haystack
-                    print("")
+                    pass
 
             while not isInGame:
                 if keyboard.is_pressed("esc"):
@@ -80,12 +53,12 @@ class Picker:
 
                 haystackImg = captureScreen(sct, monitorId, inGameScale=True)
                 try:
-                    region = self.__scale_region_ingame(monitorData["width"], monitorData["height"])
-                    imageProcesser.locateCenterAndMove(haystackImg, needleInGameImg, threshold=0.6, monitorXY=(monitorData["left"], monitorData["top"]), regionXY=(region[0], region[1]))
+                    region = scale_region_ingame(monitorData["width"], monitorData["height"])
+                    imageProcesser.locateCenter(haystackImg, needleInGameImg, threshold=0.6, monitorXY=(monitorData["left"], monitorData["top"]), regionXY=(region[0], region[1]))
                     isInGame = True
                 except ValueError as e:
                     #supress the exception and continue searching for the needle in the haystack
-                    print("")
+                    pass
 
                 if isInGame:
                     break
@@ -95,8 +68,8 @@ class Picker:
 
         subprocess.call("cls", shell=True)
         print("You entered the selected team!\n" \
-        "Going back to the menu!")
-        time.sleep(4)
+        "Going back to the menu!...")
+        time.sleep(15)
         subprocess.call("cls", shell=True)
         Title.show_title()
 

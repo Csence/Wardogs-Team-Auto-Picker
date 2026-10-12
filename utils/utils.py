@@ -100,3 +100,29 @@ def getMonitorPosition(mssInstance: MSS, monitorId: int):
     logging.info(f"Monitor {monitorId} position: {monitorData['left']}, {monitorData['top']}")
     return monitorData['left'], monitorData['top']
 
+def scale_region_ingame(screen_width, screen_height):
+        base_width = 1920
+        base_height = 1080
+
+        region = (
+            int(1850 * screen_width / base_width),
+            int(1000 * screen_height / base_height),
+            int(50 * screen_width / base_width),
+            int(50 * screen_height / base_height)
+        )
+
+        return region
+
+
+def scale_region(screen_width, screen_height):
+        base_width = 1920
+        base_height = 1080
+
+        region = (
+            int(720 * screen_width / base_width),
+            int(400 * screen_height / base_height),
+            int(480 * screen_width / base_width),
+            int(300 * screen_height / base_height)
+        )
+
+        return region
