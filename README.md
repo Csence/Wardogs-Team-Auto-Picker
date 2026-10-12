@@ -1,8 +1,6 @@
 Wardogs Team Auto Picker
 ========================
 
-Because writing a Python script to completely hijack your mouse is completely justified if it saves you from accidentally playing a match as Lonestar.
-
 ⚠️ Legal & Ethical Disclaimer
 -----------------------------
 
@@ -22,34 +20,26 @@ Features
     
 *   **Dynamic Resolution Scaling:** The script automatically calculates and scales the search regions based on your monitor's current screen resolution. It calculates this using a 1920x1080 resolution baseline.
     
-*   **Image Recognition:** It utilizes PyAutoGUI's locateCenterOnScreen function to find UI elements. It operates with a 90% confidence threshold and uses grayscale matching to improve performance.
+*   **Image Recognition:** Now using mss, pywin32, and OpenCV for faster image capture and processing. It operates with a high confidence threshold and uses grayscale matching to improve performance.
     
 *   **Auto-Clicking Loop:** Once activated, the script searches for the team image, clicks it, and repeatedly checks for a secondary "in-game" image to confirm success. Upon successful confirmation, it notifies the user and returns to the main menu.
     
 *   **Cancelable Operations:** Pressing the ESC key immediately halts the auto-clicking loop or exits the application.
     
-
-Prerequisites
--------------
-
-You will need Python installed along with the required libraries. You can install them using the provided requirements.txt file:
-
-
-```Bash
-pip install -r requirements.txt
-```
-(Note: OpenCV (cv2) is required by PyAutoGUI for confidence-based image matching and is explicitly imported in main.py.)
-
-Usage
+Installation & Usage
 -----
 
-1.  Ensure your UI reference images are saved in a local ./images/ directory. The script expects two images per team (e.g., ./images/lonestar.png and ./images/lonestar\_ingame.png).
+You no longer need to install Python or mess with dependencies! Just download the pre-compiled version:
+
+1.  Go to the **Releases** section on the right side of this GitHub repository.
     
-2.  
-```Bash
-python main.py
-```
-3.  Follow the console prompts:
+2.  Download the latest .zip file (e.g., windows-build.zip).
+    
+3.  **Extract the entire .zip file** into a folder on your computer._(⚠️ Important: Do not run the .exe directly from inside the .zip archive, or it will fail to load the required images folder)._
+    
+4.  Double-click main.exe to run the program.
+    
+5.  Follow the console prompts while your game is open:
     
     *   Press **F1** to auto-pick Lonestar.
         
@@ -57,7 +47,7 @@ python main.py
         
     *   Press **F3** to auto-pick Manticore.
         
-    *   Press **ESC** to stop the program.
+    *   Press **ESC** to stop the auto-clicking loop or exit the program.
 
 ## Issues & Support
 If you encounter any bugs, run into problems getting the script to work, or have suggestions for improvements, please feel free to open an issue in this repository!
