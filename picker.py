@@ -1,80 +1,76 @@
-import pyautogui
 import keyboard
 import time
 import subprocess
+from mss import MSS
 from title import Title
+from utils.screenCapture import captureScreen
+from utils.utils import getGameStatus, getMonitorId, clickLeftMouseButton
+import utils.imageProcesser as imageProcesser
+from utils.utils import scale_region, scale_region_ingame
 
-class Picker: 
-
-    def __init__(self, screen_width, screen_height):
-        self.screen_height = screen_height
-        self.screen_width = screen_width
-        return
-
-    @staticmethod
-    def __scale_region(screen_width, screen_height):
-        base_width = 1920
-        base_height = 1080
-
-        region = (
-            int(720 * screen_width / base_width),
-            int(400 * screen_height / base_height),
-            int(480 * screen_width / base_width),
-            int(300 * screen_height / base_height)
-        )
-
-        return region
+class Picker:
 
     @staticmethod
-    def __scale_region_ingame(screen_width, screen_height):
-        base_width = 1920
-        base_height = 1080
+    def pick_team(images):
 
-        region = (
-            int(1850 * screen_width / base_width),
-            int(1000 * screen_height / base_height),
-            int(50 * screen_width / base_width),
-            int(50 * screen_height / base_height)
-        )
+        img, inGameImg = images
+  
+        running, pid = getGameStatus()
 
-        return region
+        if not running:
+            print("Wardogs is not running. Please start the game and try again.")
+            subprocess.call("cls", shell=True)
+            Title.show_title()
+            return
 
-    def pick_team(self, images):
-        x = None
-        isIngame = False
+        monitorId = getMonitorId(pid)
+        needleImg = imageProcesser.loadNeedleImage(img)
+        needleInGameImg = imageProcesser.loadNeedleImage(inGameImg)
 
-        subprocess.call("cls")
+        subprocess.call("cls", shell=True)
         print("Team selection in progress...")
 
-        while x == None:
-            if keyboard.is_pressed("esc"):
-                return
-            
-            try:
-                x, y = pyautogui.locateCenterOnScreen(images[0], confidence=0.9, grayscale=True, region=self.__scale_region(self.screen_width, self.screen_height))
-            except pyautogui.ImageNotFoundException:
-                x = None
+        with MSS() as sct:
+            point = None
+            monitorData = sct.monitors[monitorId]
+            isInGame = False
 
-            time.sleep(0.05)
+            while point is None:
+                if keyboard.is_pressed("esc"):
+                    return
 
-        while isIngame == False:
-            try:
-                isIngame = pyautogui.locateCenterOnScreen(images[1], confidence=0.9, grayscale=True, region=self.__scale_region_ingame(self.screen_width, self.screen_height))
-            except pyautogui.ImageNotFoundException:
-                isIngame = False
+                haystackImg = captureScreen(sct, monitorId)
+                try:
+                    region = scale_region(monitorData["width"], monitorData["height"])
+                    point = imageProcesser.locateCenterAndMove(haystackImg, needleImg, threshold=0.9, monitorXY=(monitorData["left"], monitorData["top"]), regionXY=(region[0], region[1]))
+                except ValueError as e:
+                    #supress the exception and continue searching for the needle in the haystack
+                    pass
 
-            if keyboard.is_pressed("esc"):
-                return
-                
-            pyautogui.moveTo(x,y)
-            pyautogui.leftClick()
-            time.sleep(0.09)
+            while not isInGame:
+                if keyboard.is_pressed("esc"):
+                    return
 
-        subprocess.call("cls")
+                haystackImg = captureScreen(sct, monitorId, inGameScale=True)
+                try:
+                    region = scale_region_ingame(monitorData["width"], monitorData["height"])
+                    imageProcesser.locateCenter(haystackImg, needleInGameImg, threshold=0.6, monitorXY=(monitorData["left"], monitorData["top"]), regionXY=(region[0], region[1]))
+                    isInGame = True
+                except ValueError as e:
+                    #supress the exception and continue searching for the needle in the haystack
+                    pass
+
+                if isInGame:
+                    break
+
+                clickLeftMouseButton()
+                time.sleep(0.4)
+
+        subprocess.call("cls", shell=True)
         print("You entered the selected team!\n" \
-        "Going back to the menu!")
-        time.sleep(4)
-        subprocess.call("cls")
-        print(Title.show_title())
+        "Going back to the menu!...")
+        time.sleep(15)
+        subprocess.call("cls", shell=True)
+        Title.show_title()
 
         return

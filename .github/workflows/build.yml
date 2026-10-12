@@ -1,0 +1,56 @@
+name: Build and Package Windows Executable
+
+on:
+  push:
+    branches:
+      - main
+
+# Required permission to create releases in the repository
+permissions:
+  contents: write
+
+jobs:
+  build:
+    runs-on: windows-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.14' 
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install pyinstaller opencv-python pywin32 mss psutil keyboard
+
+      - name: Build executable with PyInstaller
+        run: |
+          pyinstaller --onefile main.py
+
+      - name: Package Executable and Images into a Zip
+        run: |
+          mkdir release_package
+          
+          Copy-Item -Path "dist\main.exe" -Destination "release_package\"
+          Copy-Item -Path "images" -Destination "release_package\images" -Recurse
+          
+          Compress-Archive -Path "release_package\*" -DestinationPath "Wardogs-Team-Auto-Picker.zip"
+        shell: powershell
+
+      - name: Upload Zip Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: windows-build
+          path: Wardogs-Team-Auto-Picker.zip
+
+      - name: Publish to GitHub Releases
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: "v1.0.${{ github.run_number }}"
+          name: "Automated Build ${{ github.run_number }}"
+          files: Wardogs-Team-Auto-Picker.zip
+          generate_release_notes: true
