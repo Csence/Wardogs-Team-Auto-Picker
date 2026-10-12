@@ -5,6 +5,10 @@ on:
     branches:
       - main
 
+# Required permission to create releases in the repository
+permissions:
+  contents: write
+
 jobs:
   build:
     runs-on: windows-latest
@@ -16,7 +20,7 @@ jobs:
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
-          python-version: '3.11' # Change this if you need a specific Python version
+          python-version: '3.11' 
 
       - name: Install dependencies
         run: |
@@ -25,24 +29,28 @@ jobs:
 
       - name: Build executable with PyInstaller
         run: |
-          # Creates a single standalone .exe file in the 'dist' folder
           pyinstaller --onefile main.py
 
       - name: Package Executable and Images into a Zip
         run: |
-          # Create a staging directory for the zip contents
           mkdir release_package
           
-          # Copy the compiled .exe and the images folder into the staging directory
           Copy-Item -Path "dist\main.exe" -Destination "release_package\"
           Copy-Item -Path "images" -Destination "release_package\images" -Recurse
           
-          # Compress the staging directory into a zip file
-          Compress-Archive -Path "release_package\*" -DestinationPath "my_project_build.zip"
+          Compress-Archive -Path "release_package\*" -DestinationPath "Wardogs-Team-Auto-Picker.zip"
         shell: powershell
 
       - name: Upload Zip Artifact
         uses: actions/upload-artifact@v4
         with:
           name: windows-build
-          path: my_project_build.zip
+          path: Wardogs-Team-Auto-Picker.zip
+
+      - name: Publish to GitHub Releases
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: "v1.0.${{ github.run_number }}"
+          name: "Automated Build ${{ github.run_number }}"
+          files: Wardogs-Team-Auto-Picker.zip
+          generate_release_notes: true
