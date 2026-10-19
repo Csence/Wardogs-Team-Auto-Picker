@@ -12,13 +12,13 @@ win32security.AdjustTokenPrivileges(process_handle, False, [(privilege_value, wi
 
 class Utils:
 
-    def __init__(self, mssInstance: MSS, screenWidth: int, screenHeight: int):
-        self.mssInstance = mssInstance
-        self.screenWidth = screenWidth
-        self.screenHeight = screenHeight
+    def __init__(self, mss_instance: MSS, screen_width: int, screen_height: int):
+        self.mss_instance = mss_instance
+        self.screen_width = screen_width
+        self.screen_height = screen_height
 
     @staticmethod
-    def getGameStatus() -> tuple[bool, int | None]:
+    def get_game_status() -> tuple[bool, int | None]:
         """
         Check if the game is running by enumerating all processes and checking their names.
         Returns a tuple (running: bool, pid: int or None)
@@ -58,7 +58,7 @@ class Utils:
         return running, pid
 
     @staticmethod
-    def getMonitorId(process_id) -> int | Exception:
+    def get_monitor_id(process_id) -> int | Exception:
         """Get the monitor ID for the window associated with the given process ID."""
 
         logging.basicConfig()
@@ -82,7 +82,7 @@ class Utils:
         return Exception(f"No window found for process ID {process_id}")
 
     @staticmethod
-    def moveMouseToPosition(x: int, y: int) -> None:
+    def move_mouse_to_position(x: int, y: int) -> None:
         """Move the mouse cursor to the specified (x, y) coordinates."""
 
         logging.basicConfig()
@@ -90,7 +90,7 @@ class Utils:
         logging.info(f"Moved mouse to ({x}, {y})")
 
     @staticmethod
-    def clickLeftMouseButton() -> None:
+    def click_left_mouse_button() -> None:
         """Simulate a left mouse button click at the current cursor position."""
 
         logging.basicConfig()
@@ -99,23 +99,23 @@ class Utils:
         win32api.mouse_event(win32con.MOUSEEVENTF_LEFTUP, 0, 0, 0, 0)
         logging.info("Left mouse button clicked")
 
-    def getMonitorPosition(self, monitorId: int) -> tuple[int, int]:
+    def get_monitor_position(self, monitor_id: int) -> tuple[int, int]:
         """Get the position of the monitor with the given ID."""
 
         logging.basicConfig()
-        monitorData = self.mssInstance.monitors[monitorId]
-        logging.info(f"Monitor {monitorId} position: {monitorData['left']}, {monitorData['top']}")
-        return monitorData['left'], monitorData['top']
+        monitor_data = self.mss_instance.monitors[monitor_id]
+        logging.info(f"Monitor {monitor_id} position: {monitor_data['left']}, {monitor_data['top']}")
+        return monitor_data['left'], monitor_data['top']
 
     def scale_region_ingame(self) -> tuple[int, int, int, int]:
             base_width = 1920
             base_height = 1080
 
             region = (
-                int(1850 * self.screenWidth / base_width),
-                int(1000 * self.screenHeight / base_height),
-                int(50 * self.screenWidth / base_width),
-                int(50 * self.screenHeight / base_height)
+                int(1850 * self.screen_width / base_width),
+                int(1000 * self.screen_height / base_height),
+                int(50 * self.screen_width / base_width),
+                int(50 * self.screen_height / base_height)
             )
 
             return region
@@ -125,10 +125,10 @@ class Utils:
             base_height = 1080
 
             region = (
-                int(720 * self.screenWidth / base_width),
-                int(400 * self.screenHeight / base_height),
-                int(480 * self.screenWidth / base_width),
-                int(300 * self.screenHeight / base_height)
+                int(720 * self.screen_width / base_width),
+                int(400 * self.screen_height / base_height),
+                int(480 * self.screen_width / base_width),
+                int(300 * self.screen_height / base_height)
             )
 
             return region
