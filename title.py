@@ -5,7 +5,7 @@ Title for the Wardogs Team Auto Picker.
 class Title:
 
     @staticmethod
-    def show_title():
+    def show_title() -> None:
 
         title_string =  "=========================\n" \
                         "Wardogs Team Auto Picker\n" \
@@ -17,4 +17,3 @@ class Title:
                         "If you want to stop the program press ESC!\n"
 
         print(title_string)
-        return

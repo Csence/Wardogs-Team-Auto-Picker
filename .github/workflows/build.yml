@@ -5,7 +5,6 @@ on:
     branches:
       - main
 
-# Required permission to create releases in the repository
 permissions:
   contents: write
 
@@ -20,12 +19,12 @@ jobs:
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
-          python-version: '3.14' 
+          python-version: '3.15' 
 
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
-          pip install pyinstaller opencv-python pywin32 mss psutil keyboard
+          pip install pyinstaller opencv-python pywin32 mss psutil keyboard numpy
 
       - name: Build executable with PyInstaller
         run: |
@@ -51,6 +50,6 @@ jobs:
         uses: softprops/action-gh-release@v2
         with:
           tag_name: "v1.0.${{ github.run_number }}"
-          name: "Automated Build ${{ github.run_number }}"
+          name: "Wardogs-Team-Auto-Picker Build ${{ github.run_number }}"
           files: Wardogs-Team-Auto-Picker.zip
           generate_release_notes: true

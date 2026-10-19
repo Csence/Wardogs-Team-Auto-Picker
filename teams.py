@@ -1,7 +1,7 @@
 """
 Enum for the different teams in the game.
 """
-from enum import Enum
+lazy from enum import Enum
 
 class Teams(Enum):
     LONESTAR = ("./images/lonestar.png", "./images/lonestar_ingame.png")
