@@ -1,48 +1,49 @@
-import cv2
-import utils.utils as utils
+lazy import cv2
+lazy import utils.utils as utils
 
-def loadNeedleImage(path):
-    needle = cv2.imread(path)
-    if needle is None:
-        raise ValueError(f"Could not load image from path: {path}")
-    return needle
+class ImageProcesser:
 
-def locateCenterAndMove(haystack, needle, threshold=0.8, monitorXY=(0, 0), regionXY=(0,0)):
-    haystack = cv2.cvtColor(haystack, cv2.COLOR_BGR2GRAY)
-    needle = cv2.cvtColor(needle, cv2.COLOR_BGR2GRAY)
+    def __init__(self):
+        pass
 
-    monitorX, monitorY = monitorXY
-    regionX, regionY = regionXY
-
-    if haystack.shape[0] < needle.shape[0] or haystack.shape[1] < needle.shape[1]:
-        raise ValueError("needle dimension(s) exceed the haystack image")
-
-    result = cv2.matchTemplate(haystack, needle, cv2.TM_CCOEFF_NORMED)
-    _, max_val, _, max_loc = cv2.minMaxLoc(result)
-    if max_val >= threshold:
-        utils.moveMouseToPosition(monitorX + regionX + max_loc[0] + needle.shape[1] // 2, monitorY + regionY + max_loc[1] + needle.shape[0] // 2)
-        return max_loc
-    else: 
-        raise ValueError("needle not found in haystack with the given threshold")
+    @staticmethod
+    def loadNeedleImage(path: str) -> cv2.Mat | ValueError:
+        needle = cv2.imread(path)
+        if needle is None:
+            raise ValueError(f"Could not load image from path: {path}")
+        return needle
     
-    return None
+    @staticmethod
+    def locateCenterAndMove(haystack, needle, threshold=0.8, monitorXY=(0, 0), regionXY=(0,0)) -> tuple[int, int] | ValueError:
+        haystack = cv2.cvtColor(haystack, cv2.COLOR_BGR2GRAY)
+        needle = cv2.cvtColor(needle, cv2.COLOR_BGR2GRAY)
 
-def locateCenter(haystack, needle, threshold=0.8, monitorXY=(0, 0), regionXY=(0,0)):
-    haystack = cv2.cvtColor(haystack, cv2.COLOR_BGR2GRAY)
-    needle = cv2.cvtColor(needle, cv2.COLOR_BGR2GRAY)
+        monitorX, monitorY = monitorXY
+        regionX, regionY = regionXY
 
-    monitorX, monitorY = monitorXY
-    regionX, regionY = regionXY
+        if haystack.shape[0] < needle.shape[0] or haystack.shape[1] < needle.shape[1]:
+            raise ValueError("needle dimension(s) exceed the haystack image")
 
-    if haystack.shape[0] < needle.shape[0] or haystack.shape[1] < needle.shape[1]:
-        raise ValueError("needle dimension(s) exceed the haystack image")
+        result = cv2.matchTemplate(haystack, needle, cv2.TM_CCOEFF_NORMED)
+        _, max_val, _, max_loc = cv2.minMaxLoc(result)
+        if max_val >= threshold:
+            utils.moveMouseToPosition(monitorX + regionX + max_loc[0] + needle.shape[1] // 2, monitorY + regionY + max_loc[1] + needle.shape[0] // 2)
+            return max_loc
+        else: 
+            raise ValueError("needle not found in haystack with the given threshold")
 
-    result = cv2.matchTemplate(haystack, needle, cv2.TM_CCOEFF_NORMED)
-    _, max_val, _, max_loc = cv2.minMaxLoc(result)
-    if max_val >= threshold:
-        print(f"Found needle at {max_loc[0] + needle.shape[1] // 2}, {max_loc[1] + needle.shape[0] // 2} with confidence {max_val}")
-        return max_loc
-    else: 
-        raise ValueError("needle not found in haystack with the given threshold")
-    
-    return None
+    @staticmethod
+    def locateCenter(haystack, needle, threshold=0.8) -> tuple[int, int] | ValueError:
+        haystack = cv2.cvtColor(haystack, cv2.COLOR_BGR2GRAY)
+        needle = cv2.cvtColor(needle, cv2.COLOR_BGR2GRAY)
+
+        if haystack.shape[0] < needle.shape[0] or haystack.shape[1] < needle.shape[1]:
+            raise ValueError("needle dimension(s) exceed the haystack image")
+
+        result = cv2.matchTemplate(haystack, needle, cv2.TM_CCOEFF_NORMED)
+        _, max_val, _, max_loc = cv2.minMaxLoc(result)
+        if max_val >= threshold:
+            #print(f"Found needle at {max_loc[0] + needle.shape[1] // 2}, {max_loc[1] + needle.shape[0] // 2} with confidence {max_val}")
+            return max_loc
+        else: 
+            raise ValueError("needle not found in haystack with the given threshold")

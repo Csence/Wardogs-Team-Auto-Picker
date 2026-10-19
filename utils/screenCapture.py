@@ -1,24 +1,30 @@
-from mss import MSS
-import numpy as np
-from utils.utils import scale_region, scale_region_ingame
+lazy from mss import MSS
+lazy import numpy as np
+lazy from utils.utils import Utils
 
-def captureScreen(mssInstance: MSS, monitorId: int, inGameScale: bool = False):
+class ScreenCapture:
 
-    sct = mssInstance
-    monitorData = sct.monitors[monitorId]
+    def __init__(self, mssInstance: MSS, utilsInstance: Utils):
+        self.mssInstance = mssInstance
+        self.utilsInstance = utilsInstance
 
-    if inGameScale:
-        region = scale_region_ingame(monitorData["width"], monitorData["height"])
-    else:
-        region = scale_region(monitorData["width"], monitorData["height"])
+    def captureScreen(self, monitorId: int, inGameScale: bool = False) -> np.ndarray:
 
-    monitor = {
-        "top": region[1],
-        "left": region[0],
-        "width": region[2],
-        "height": region[3],
-        "mon": monitorId
-    }
+        sct = self.mssInstance
+        monitorData = sct.monitors[monitorId]
 
-    sct_img = np.asarray(sct.grab(monitor))
-    return sct_img
+        if inGameScale:
+            region = self.utilsInstance.scale_region_ingame(monitorData["width"], monitorData["height"])
+        else:
+            region = self.utilsInstance.scale_region(monitorData["width"], monitorData["height"])
+
+        monitor = {
+            "top": region[1],
+            "left": region[0],
+            "width": region[2],
+            "height": region[3],
+            "mon": monitorId
+        }
+
+        sct_img = np.asarray(sct.grab(monitor))
+        return sct_img
