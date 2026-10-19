@@ -43,7 +43,7 @@ class Picker:
 
                 haystackImg = screenCapture.captureScreen(monitorId)
                 try:
-                    region = utils.scale_region(monitorData["width"], monitorData["height"])
+                    region = utils.scale_region()
                     point = imageProcesser.locateCenterAndMove(haystackImg, needleImg, threshold=0.9, monitorXY=(monitorData["left"], monitorData["top"]), regionXY=(region[0], region[1]))
                 except ValueError as e:
                     #supress the exception and continue searching for the needle in the haystack
@@ -55,7 +55,7 @@ class Picker:
 
                 haystackImg = screenCapture.captureScreen(monitorId, inGameScale=True)
                 try:
-                    region = utils.scale_region_ingame(monitorData["width"], monitorData["height"])
+                    region = utils.scale_region_ingame()
                     imageProcesser.locateCenter(haystackImg, needleInGameImg, threshold=0.6)
                     isInGame = True
                 except ValueError as e:

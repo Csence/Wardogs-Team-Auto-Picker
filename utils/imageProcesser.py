@@ -1,5 +1,5 @@
 lazy import cv2
-lazy import utils.utils as utils
+lazy from utils.utils import Utils
 
 class ImageProcesser:
 
@@ -27,7 +27,7 @@ class ImageProcesser:
         result = cv2.matchTemplate(haystack, needle, cv2.TM_CCOEFF_NORMED)
         _, max_val, _, max_loc = cv2.minMaxLoc(result)
         if max_val >= threshold:
-            utils.moveMouseToPosition(monitorX + regionX + max_loc[0] + needle.shape[1] // 2, monitorY + regionY + max_loc[1] + needle.shape[0] // 2)
+            Utils.moveMouseToPosition(monitorX + regionX + max_loc[0] + needle.shape[1] // 2, monitorY + regionY + max_loc[1] + needle.shape[0] // 2)
             return max_loc
         else: 
             raise ValueError("needle not found in haystack with the given threshold")

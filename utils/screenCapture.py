@@ -14,9 +14,9 @@ class ScreenCapture:
         monitorData = sct.monitors[monitorId]
 
         if inGameScale:
-            region = self.utilsInstance.scale_region_ingame(monitorData["width"], monitorData["height"])
+            region = self.utilsInstance.scale_region_ingame()
         else:
-            region = self.utilsInstance.scale_region(monitorData["width"], monitorData["height"])
+            region = self.utilsInstance.scale_region()
 
         monitor = {
             "top": region[1],
